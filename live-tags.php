@@ -3,7 +3,7 @@
 Plugin Name: Live Tags
 Plugin URI:  http://no-real-url.com
 Description: Allows for live tag filtering
-Version:     1.2
+Version:     1.4
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
