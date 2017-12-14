@@ -23,25 +23,6 @@ class Widget_Live_Tags extends Widget_Base {
    }
 
    protected function _register_controls() {
-
-      // $this->add_control(
-      //    'section_blog_posts',
-      //    [
-      //       'label' => __( 'Tags to Include', 'elementor-custom-element' ),
-      //       'type' => Controls_Manager::SECTION,
-      //    ]
-      // );
-      //
-      // $this->add_control(
-      //    'some_text',
-      //    [
-      //       'label' => __( 'Text', 'elementor-custom-element' ),
-      //       'type' => Controls_Manager::TEXT,
-      //       'default' => '',
-      //       'title' => __( 'Enter some text', 'elementor-custom-element' ),
-      //       'section' => 'section_blog_posts',
-      //    ]
-      // );
    }
 
    protected function render( $instance = [] ) {
@@ -67,7 +48,7 @@ class Widget_Live_Tags extends Widget_Base {
          <?php
          foreach( $tags as $tag ){
            echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>
-                 <label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name . ' <span class="tag-count">'.$tag->count.'</span></label>';
+                 <label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name . ' <span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span></label>';
          }
          wp_reset_query();
          ?>
@@ -78,11 +59,41 @@ class Widget_Live_Tags extends Widget_Base {
         }
 
         function handleResponse(response) {
+          updateTagCount(response.tags);
           var container = document.querySelector('.live-tag-container');
-          container.innerHTML = response.map(buildItem).join("\n");
+          container.innerHTML = response.pages.map(buildItem).join("\n");
+        }
+
+        function resetTags() {
+          var tags = document.querySelectorAll('.live-tag-list input[type="checkbox"]');
+          for(var i = 0; i < tags.length; i++){
+            var counter = tags[i].nextElementSibling.querySelector('span');
+            tags[i].disabled = false;
+            counter.innerText = counter.getAttribute('data-original-count');
+          }
+        }
+
+        function updateTagCount(availableTags){
+          if(Object.keys(availableTags).length){
+            var tags = document.querySelectorAll('.live-tag-list input[type="checkbox"]');
+            for(var i = 0; i < tags.length; i++){
+              var tag = tags[i];
+              var counter = tag.nextElementSibling.querySelector('span');
+              if (availableTags[tag.value]) {
+                counter.innerText = availableTags[tag.value];
+                tag.disabled = false;
+              } else {
+                counter.innerText = '0';
+                tag.disabled = true;
+              }
+            }
+          } else {
+            resetTags();
+          }
         }
 
         function loadResponse() {
+          var tags = document.querySelector('.live-tag-list');
           var selectedTags = tags.querySelectorAll('input[type="checkbox"]');
           var selectedTagValues = [];
           for(var i = 0; i < selectedTags.length; i++){

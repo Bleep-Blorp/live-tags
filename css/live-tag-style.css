@@ -18,7 +18,10 @@
 
 .live-tag-list label .tag-count {
   font-size: 70%;
-  padding: 2px 10px;
+  padding: 2px;
+  text-align: center;
+  display: inline-block;
+  min-width: 2.5em;
   border-radius: 50px;
   background: rgba(200,200,200,0.5);
   margin-left: 5px;
@@ -42,6 +45,9 @@
   transform: translateX(2px) translateY(2px);
 }
 
+.live-tag-list input[type=checkbox]:disabled + label {
+  opacity: 0.25;
+}
 
 .live-tag-container {
   margin-top: 2rem;
