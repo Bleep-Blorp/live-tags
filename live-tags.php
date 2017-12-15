@@ -3,7 +3,7 @@
 Plugin Name: Live Tags
 Plugin URI:  http://no-real-url.com
 Description: Allows for live tag filtering
-Version:     2.0
+Version:     2.1
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
@@ -43,12 +43,21 @@ class LiveTagViewer {
 
   public function paginated_posts_for_tag() {
     $tags = $_POST['tags'];
+    $unselected_tags = $_POST['unselected'];
     $pages = [];
     $available_tags = [];
+    $query_type = 'tag__and';
 
-    if ($tags) {
+    if (!empty($tags)) {
+      $tags_to_show = $tags;
+    } else {
+      $tags_to_show = $unselected_tags;
+      $query_type = 'tag__in';
+    }
+
+    if ($tags_to_show) {
       $args = array(
-        'tag__and' => $tags,
+        $query_type => $tags_to_show,
         'post_type' => array( 'page' ),
       );
 
