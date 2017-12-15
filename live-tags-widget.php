@@ -22,33 +22,84 @@ class Widget_Live_Tags extends Widget_Base {
      return $this->get_title();
    }
 
+   protected function sort_by_name($a, $b){
+     $a = strtolower($a->name);
+     $b = strtolower($b->name);
+     if ($a == $b) {
+       return 0;
+     }
+     return ($a < $b) ? -1 : 1;
+   }
+
    protected function _register_controls() {
+
+     $tags = get_tags();
+     usort($tags, array( $this, 'sort_by_name'));
+
+     $this->start_controls_section(
+       'section_tagz',[
+         'label' => __('Tags to Show', 'ba-live-tags'),
+         'tab' => Controls_Manager::TAB_CONTENT
+       ]
+     );
+
+     foreach ( $tags as $tag ) {
+       $this->add_control(
+         $tag->term_id, [
+           'label' => __( $tag->name, 'ba-live-tags' ),
+           'type' => Controls_Manager::SWITCHER,
+         ]
+      );
+     }
+
+     $this->end_controls_section();
+
+     $this->start_controls_section(
+       'section_settingz',[
+         'label' => __('Config', 'ba-live-tags'),
+         'tab' => Controls_Manager::TAB_ADVANCED
+       ]
+     );
+
+     $this->add_control(
+       'count_visible', [
+         'label' => __( "Show Count", 'ba-live-tags' ),
+         'type' => Controls_Manager::SWITCHER,
+       ]
+     );
+
+     $this->end_controls_section();
    }
 
    protected function render( $instance = [] ) {
       // get our input from the widget settings.
-      $custom_text = ! empty( $instance['some_text'] ) ? $instance['some_text'] : ' (no text was entered ) ';
+      $settings = $this->get_settings();
+
+      $all_tags = get_tags();
+      usort($all_tags, array( $this, 'sort_by_name'));
+
+      $tags = [];
+
+      foreach($all_tags as $tag) {
+        if($settings[$tag->term_id] == 'yes'){
+          $tags []= $tag;
+        }
+      }
 
       // this is the url to the live ajax function
       // $ajax_url = plugin_dir_url(__FILE__) . 'live-tag-ajax.php' ;
       $ajax_url = admin_url( 'admin-ajax.php' );
-      $included_tags = str_replace('|', ', ', get_option('included_tags', ''));
-      if( strlen($included_tags) > 0 ) {
-        $tags = get_tags(array(
-          "include" => $included_tags,
-          "hide_empty" => true
-        ));
-      } else {
-        $tags = [];
-      }
-
 
       ?>
       <form class="live-tag-list">
          <?php
          foreach( $tags as $tag ){
-           echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>
-                 <label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name . ' <span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span></label>';
+           echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
+           echo '<label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
+           if ($settings['count_visible'] == 'yes') {
+             echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
+           }
+           echo '</label>';
          }
          wp_reset_query();
          ?>
@@ -69,7 +120,9 @@ class Widget_Live_Tags extends Widget_Base {
           for(var i = 0; i < tags.length; i++){
             var counter = tags[i].nextElementSibling.querySelector('span');
             tags[i].disabled = false;
-            counter.innerText = counter.getAttribute('data-original-count');
+            if(counter){
+              counter.innerText = counter.getAttribute('data-original-count');
+            }
           }
         }
 
@@ -80,10 +133,14 @@ class Widget_Live_Tags extends Widget_Base {
               var tag = tags[i];
               var counter = tag.nextElementSibling.querySelector('span');
               if (availableTags[tag.value]) {
-                counter.innerText = availableTags[tag.value];
+                if(counter){
+                  counter.innerText = availableTags[tag.value];
+                }
                 tag.disabled = false;
               } else {
-                counter.innerText = '0';
+                if(counter){
+                  counter.innerText = '0';
+                }
                 tag.disabled = true;
               }
             }

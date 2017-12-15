@@ -15,31 +15,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 class LiveTagsAdmin {
   public function __construct() {
-    if ( is_admin() ){
-      add_action( 'admin_menu', array( $this, 'initialize_menu' ) );
-      add_action( 'admin_init', array( $this, 'initialize_settings' ) );
-      $this->save_form();
-    }
   }
 
-  public function initialize_menu() {
-  	//create new top-level menu
-    add_options_page( 'Live Tag Filtering', 'Live Tags', 'manage_options', 'live-tag', array($this, 'settings_page') );
-  }
-
-  public function initialize_settings() {
-    register_setting( 'live_tag_settings_group', 'included_tags');
-  }
-
-  public function save_form() {
-    if( $_POST['included_tags'] ){
-      update_option('included_tags', $_POST['included_tags']);
-    }
-  }
-
-  public function settings_page() {
-    require 'admin/settings.php';
-  }
 }
 
 class LiveTagViewer {
