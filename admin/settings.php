@@ -51,9 +51,14 @@
             }
 
             function updateFormFromSettingField(settingString){
-              settingString.split('|').map(function(val){
-                form.querySelector('input[value="'+val+'"]').checked = true;
-                console.log('checking:',val);
+              settingString.split('|').forEach(function(val){
+                var checkbox = form.querySelector('input[value="'+val+'"]');
+                if (checkbox) {
+                  checkbox.checked = true;
+                  console.log('checking:', val);
+                } else {
+                  console.log('skipping: ', val);
+                }
               })
 
             }
