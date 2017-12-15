@@ -62,8 +62,22 @@ class Widget_Live_Tags extends Widget_Base {
      );
 
      $this->add_control(
-       'count_visible', [
+       'show_count', [
          'label' => __( "Show Count", 'ba-live-tags' ),
+         'type' => Controls_Manager::SWITCHER,
+       ]
+     );
+
+     $this->add_control(
+       'show_body', [
+         'label' => __( "Show Article Body", 'ba-live-tags' ),
+         'type' => Controls_Manager::SWITCHER,
+       ]
+     );
+
+     $this->add_control(
+       'show_all_on_blank', [
+         'label' => __( "Show All Articles if no Matches", 'ba-live-tags' ),
          'type' => Controls_Manager::SWITCHER,
        ]
      );
@@ -89,34 +103,46 @@ class Widget_Live_Tags extends Widget_Base {
       // this is the url to the live ajax function
       // $ajax_url = plugin_dir_url(__FILE__) . 'live-tag-ajax.php' ;
       $ajax_url = admin_url( 'admin-ajax.php' );
-
+      $id = uniqid();
       ?>
-      <form class="live-tag-list">
-         <?php
-         foreach( $tags as $tag ){
-           echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
-           echo '<label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
-           if ($settings['count_visible'] == 'yes') {
-             echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
+      <div id="live-tag-<?php echo $id?>">
+        <form class="live-tag-list">
+           <?php
+           foreach( $tags as $tag ){
+             echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
+             echo '<label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
+             if ($settings['show_count'] == 'yes') {
+               echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
+             }
+             echo '</label>';
            }
-           echo '</label>';
-         }
-         wp_reset_query();
-         ?>
-      </form>
+           wp_reset_query();
+           ?>
+        </form>
+        <div class="live-tag-container"></div>
+      </div>
       <script type="text/javascript">
+        var thisId = "live-tag-<?php echo $id?>";
+        var thisContainer = document.getElementById(thisId);
+
         function buildItem(page) {
-          return '<div class="live-tag-page"><a href="'+page.link+'"><h3>'+page.title+'</h3><p>' + page.body + '</p></a></div>';
+          var content = '<div class="live-tag-page"><a href="'+page.link+'">';
+              content += '<h3>'+page.title+'</h3>';
+              <?php if ($settings['show_body'] == 'yes') {?>
+                content += '<p>' + page.body + '</p>';
+              <?php } ?>
+              content += '</a></div>';
+          return content;
         }
 
         function handleResponse(response) {
           updateTagCount(response.tags);
-          var container = document.querySelector('.live-tag-container');
+          var container = thisContainer.querySelector('.live-tag-container');
           container.innerHTML = response.pages.map(buildItem).join("\n");
         }
 
         function resetTags() {
-          var tags = document.querySelectorAll('.live-tag-list input[type="checkbox"]');
+          var tags = thisContainer.querySelectorAll('.live-tag-list input[type="checkbox"]');
           for(var i = 0; i < tags.length; i++){
             var counter = tags[i].nextElementSibling.querySelector('span');
             tags[i].disabled = false;
@@ -128,7 +154,7 @@ class Widget_Live_Tags extends Widget_Base {
 
         function updateTagCount(availableTags){
           if(Object.keys(availableTags).length){
-            var tags = document.querySelectorAll('.live-tag-list input[type="checkbox"]');
+            var tags = thisContainer.querySelectorAll('.live-tag-list input[type="checkbox"]');
             for(var i = 0; i < tags.length; i++){
               var tag = tags[i];
               var counter = tag.nextElementSibling.querySelector('span');
@@ -150,28 +176,31 @@ class Widget_Live_Tags extends Widget_Base {
         }
 
         function loadResponse() {
-          var tags = document.querySelector('.live-tag-list');
-          var selectedTags = tags.querySelectorAll('input[type="checkbox"]');
+          // var tags = thisContainer.querySelector('.live-tag-list');
+          var tags = thisContainer.querySelectorAll('input[type="checkbox"]');
           var selectedTagValues = [];
-          for(var i = 0; i < selectedTags.length; i++){
-            if(selectedTags[i].checked){
-              selectedTagValues.push(selectedTags[i].value);
+          var unselectedTagValues = [];
+          for(var i = 0; i < tags.length; i++){
+            if(tags[i].checked){
+              selectedTagValues.push(tags[i].value);
+            } else {
+              unselectedTagValues.push(tags[i].value);
             }
           }
 
           var data = {
-        		'action': 'live_tags',
-            'tags':   selectedTagValues
+        		'action'       : 'live_tags',
+            'tags'         : selectedTagValues,
+            'unselected' : <?php echo $settings['show_all_on_blank'] ? unselectedTagValues : []  ?>
         	};
 
         	jQuery.post('<?php echo $ajax_url ?>', data, handleResponse);
         }
 
-        var tags = document.querySelector('.live-tag-list');
+        var tags = thisContainer.querySelector('.live-tag-list');
         tags.addEventListener('change', loadResponse);
         document.addEventListener('DOMContentLoaded', loadResponse)
       </script>
-      <div class="live-tag-container"></div>
       <?php
    }
 
