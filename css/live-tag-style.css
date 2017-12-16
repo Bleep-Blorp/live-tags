@@ -2,6 +2,12 @@
 }
 
 .live-tag-list label {
+  margin: 5px;
+  float: left;
+  padding-top: 5px;
+}
+
+.live-tag-list label.as-button {
   float: left;
   padding: 5px 10px 5px 10px;
   border: 1px solid grey;
@@ -15,7 +21,7 @@
   transition: transform 0.15s;
 }
 
-.live-tag-list label .tag-count {
+.live-tag-list label.as-button .tag-count {
   font-size: 70%;
   padding: 2px;
   text-align: center;
@@ -36,7 +42,16 @@
   display: none;
 }
 
-.live-tag-list input.live-tag-search {
+.live-tag-list .live-tag-search-container {
+  clear: left;
+}
+
+.live-tag-list .live-tag-search-container label {
+  margin: 5px;
+  display: inline-block;
+}
+
+.live-tag-list .live-tag-search-container input.live-tag-search {
   width: auto;
   padding: 5px 10px 5px 10px;
   margin: 5px;
@@ -47,7 +62,7 @@
   color: #aaa;
 }
 
-.live-tag-list input[type=checkbox]:checked + label {
+.live-tag-list input[type=checkbox]:checked + label.as-button {
   background-color: green;
   border-color: darkgreen;
   color: #fff;
@@ -55,7 +70,7 @@
   transform: translateX(2px) translateY(2px);
 }
 
-.live-tag-list input[type=checkbox]:disabled + label {
+.live-tag-list input[type=checkbox]:disabled + label.as-button {
   opacity: 0.25;
 }
 

@@ -127,10 +127,11 @@ class Widget_Live_Tags extends Widget_Base {
       ?>
       <div id="live-tag-<?php echo $id?>">
         <form class="live-tag-list">
+            <label>Filters</label>
            <?php
            foreach( $tags as $tag ){
              echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
-             echo '<label for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
+             echo '<label class="as-button" for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
              if ($settings['show_count'] == 'yes') {
                echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
              }
@@ -138,7 +139,10 @@ class Widget_Live_Tags extends Widget_Base {
            }
 
            if ($settings['show_search'] == 'yes') {
+             echo '<div class="live-tag-search-container">';
+             echo '<label class="live-tag-search-label" for="live-tag-search">Search</label>' ;
              echo '<input type="search" placeholder="search" name="live-tag-search" class="live-tag-search"></input>';
+             echo '</div>';
            }
 
            wp_reset_query();
