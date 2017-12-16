@@ -68,7 +68,11 @@ class LiveTagViewer {
         case 'alpha':
           $args['orderby'] = 'title';
           $args['order'] = 'asc';
-          break;
+        break;
+      }
+
+      if (!empty($_POST['search'])) {
+        $args['s'] = $_POST['search'];
       }
 
       $query = new WP_Query( $args );

@@ -62,6 +62,14 @@ class Widget_Live_Tags extends Widget_Base {
      );
 
      $this->add_control(
+       'show_search', [
+         'label' => __( "Show Search", 'ba-live-tags' ),
+         'type' => Controls_Manager::SWITCHER,
+         'default' => 'yes',
+       ]
+     );
+
+     $this->add_control(
        'show_count', [
          'label' => __( "Show Count", 'ba-live-tags' ),
          'type' => Controls_Manager::SWITCHER,
@@ -128,6 +136,11 @@ class Widget_Live_Tags extends Widget_Base {
              }
              echo '</label>';
            }
+
+           if ($settings['show_search'] == 'yes') {
+             echo '<input type="search" placeholder="search" name="live-tag-search" class="live-tag-search"></input>';
+           }
+
            wp_reset_query();
            ?>
         </form>
@@ -136,6 +149,22 @@ class Widget_Live_Tags extends Widget_Base {
       <script type="text/javascript">
         var thisId = "live-tag-<?php echo $id?>";
         var thisContainer = document.getElementById(thisId);
+        var search = thisContainer.querySelector('input[name="live-tag-search"]');
+
+        function debounce(func, wait, immediate) {
+        	var timeout;
+        	return function() {
+        		var context = this, args = arguments;
+        		var later = function() {
+        			timeout = null;
+        			if (!immediate) func.apply(context, args);
+        		};
+        		var callNow = immediate && !timeout;
+        		clearTimeout(timeout);
+        		timeout = setTimeout(later, wait);
+        		if (callNow) func.apply(context, args);
+        	};
+        };
 
         function buildItem(page) {
           var content = '<div class="live-tag-page"><a href="'+page.link+'">';
@@ -188,7 +217,6 @@ class Widget_Live_Tags extends Widget_Base {
         }
 
         function loadResponse() {
-          // var tags = thisContainer.querySelector('.live-tag-list');
           var tags = thisContainer.querySelectorAll('input[type="checkbox"]');
           var selectedTagValues = [];
           var unselectedTagValues = [];
@@ -207,12 +235,20 @@ class Widget_Live_Tags extends Widget_Base {
             'unselected' : <?php echo $settings['show_all_on_blank'] ? unselectedTagValues : []  ?>
         	};
 
+          // add Search
+          if(search) {
+            data['search'] = search.value;
+          }
+
+          console.log('data', data);
+
         	jQuery.post('<?php echo $ajax_url ?>', data, handleResponse);
         }
 
         var tags = thisContainer.querySelector('.live-tag-list');
         tags.addEventListener('change', loadResponse);
-        document.addEventListener('DOMContentLoaded', loadResponse)
+        document.addEventListener('DOMContentLoaded', loadResponse);
+        search.addEventListener('keyup', debounce(loadResponse, 250));
       </script>
       <?php
    }

@@ -36,6 +36,11 @@
   display: none;
 }
 
+.live-tag-list input.live-tag-search::placeholder {
+  color: #999;
+
+}
+
 .live-tag-list input[type=checkbox]:checked + label {
   background-color: green;
   border-color: darkgreen;
