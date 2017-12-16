@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Live Tags
-Plugin URI:  http://no-real-url.com
+Plugin URI:  https://github.com/Bleep-Blorp/live-tags
 Description: Allows for live tag filtering
-Version:     2.4
+Version:     2.5
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
@@ -13,20 +13,14 @@ License URI: https://github.com/Bleep-Blorp/live-tags
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-class LiveTagsAdmin {
-  public function __construct() {
-  }
-
-}
-
 class LiveTagViewer {
   public function __construct() {
     $this->registerAjax();
   }
 
   public function registerAjax() {
-    add_action(        'wp_ajax_live_tags', array( $this, 'paginated_posts_for_tag') );
-    add_action( 'wp_ajax_nopriv_live_tags', array( $this, 'paginated_posts_for_tag' ) );
+    add_action(        'wp_ajax_live_tags', array( $this, 'ajax_page_response') );
+    add_action( 'wp_ajax_nopriv_live_tags', array( $this, 'ajax_page_response' ) );
     add_filter(     'allowed_http_origins', array( $this, 'add_allowed_origins') );
     add_action(       'wp_enqueue_scripts', array( $this, 'register_plugin_styles' ) );
   }
@@ -41,7 +35,7 @@ class LiveTagViewer {
 		wp_enqueue_style( 'live_tags' );
 	}
 
-  public function paginated_posts_for_tag() {
+  public function ajax_page_response() {
     $tags = $_POST['tags'];
     $unselected_tags = $_POST['unselected'];
     $pages = [];
@@ -56,13 +50,13 @@ class LiveTagViewer {
     }
 
     if ($tags_to_show) {
+      // the crazy word press query reference
       // https://codex.wordpress.org/Class_Reference/WP_Query
       $args = array(
         $query_type => $tags_to_show,
         'post_type' => array( 'page' ),
         'nopaging' => true,
       );
-
 
       switch ($_POST['order']) {
         case 'alpha':
@@ -81,6 +75,7 @@ class LiveTagViewer {
         while ( $query->have_posts() ) {
           $query->the_post();
 
+          // Filter out tags still available for this result set
           foreach(wp_get_post_tags($query->post->ID) as $tag) {
             $available_tags[$tag->term_id] += 1;
           }
@@ -101,10 +96,7 @@ class LiveTagViewer {
 
 }
 
-new LiveTagsAdmin();
 new LiveTagViewer();
-
-
 
 // Elementor custom element
 // From https://dtbaker.net/blog/web-development/2016/10/creating-your-own-custom-elementor-widgets/

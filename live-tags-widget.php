@@ -91,6 +91,22 @@ class Widget_Live_Tags extends Widget_Base {
      );
 
      $this->add_control(
+       'tag_label', [
+         'label' => __( "Tag Filter Label", 'ba-live-tags' ),
+         'type' => Controls_Manager::TEXT,
+         'placeholder' => __( 'Filters', 'your-plugin' ),
+       ]
+     );
+
+     $this->add_control(
+       'search_label', [
+         'label' => __( "Search Label", 'ba-live-tags' ),
+         'type' => Controls_Manager::TEXT,
+         'placeholder' => __( 'Search', 'your-plugin' ),
+       ]
+     );
+
+     $this->add_control(
        'sort_order', [
          'label' => __( "Page Sort Order", 'ba-live-tags' ),
          'type' => Controls_Manager::SELECT,
@@ -127,7 +143,11 @@ class Widget_Live_Tags extends Widget_Base {
       ?>
       <div id="live-tag-<?php echo $id?>">
         <form class="live-tag-list">
-            <label>Filters</label>
+            <?php if (!empty($settings['tag_label'])) { ?>
+              <div class="tag-label">
+                <label><?php echo $settings['tag_label'] ?></label>
+              </div>
+            <?php } ?>
            <?php
            foreach( $tags as $tag ){
              echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
@@ -140,7 +160,9 @@ class Widget_Live_Tags extends Widget_Base {
 
            if ($settings['show_search'] == 'yes') {
              echo '<div class="live-tag-search-container">';
-             echo '<label class="live-tag-search-label" for="live-tag-search">Search</label>' ;
+             if (!empty($settings['search_label'])) {
+               echo '<label class="live-tag-search-label" for="live-tag-search">' . $settings['search_label'] . '</label>' ;
+             }
              echo '<input type="search" placeholder="search" name="live-tag-search" class="live-tag-search"></input>';
              echo '</div>';
            }
