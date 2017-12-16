@@ -77,8 +77,20 @@ class Widget_Live_Tags extends Widget_Base {
 
      $this->add_control(
        'show_all_on_blank', [
-         'label' => __( "Show All Articles if no Matches", 'ba-live-tags' ),
+         'label' => __( "Show All Pages if No Matches", 'ba-live-tags' ),
          'type' => Controls_Manager::SWITCHER,
+       ]
+     );
+
+     $this->add_control(
+       'sort_order', [
+         'label' => __( "Page Sort Order", 'ba-live-tags' ),
+         'type' => Controls_Manager::SELECT,
+         'default' => 'alpha',
+         'options' => [
+     	     'alpha'  => __( 'Alphabetically', 'ba-live-tags' ),
+     	     'reverse_cron' => __( 'Newest First', 'ba-live-tags' ),
+         ]
        ]
      );
 
@@ -191,6 +203,7 @@ class Widget_Live_Tags extends Widget_Base {
           var data = {
         		'action'       : 'live_tags',
             'tags'         : selectedTagValues,
+            'order'        : '<?php echo $settings['sort_order'] ?>',
             'unselected' : <?php echo $settings['show_all_on_blank'] ? unselectedTagValues : []  ?>
         	};
 

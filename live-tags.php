@@ -3,7 +3,7 @@
 Plugin Name: Live Tags
 Plugin URI:  http://no-real-url.com
 Description: Allows for live tag filtering
-Version:     2.2
+Version:     2.3
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
@@ -60,8 +60,16 @@ class LiveTagViewer {
       $args = array(
         $query_type => $tags_to_show,
         'post_type' => array( 'page' ),
-        'nopaging' => true
+        'nopaging' => true,
       );
+
+
+      switch ($_POST['order']) {
+        case 'alpha':
+          $args['orderby'] = 'title';
+          $args['order'] = 'asc';
+          break;
+      }
 
       $query = new WP_Query( $args );
 
