@@ -36,9 +36,15 @@
   display: none;
 }
 
-.live-tag-list input.live-tag-search::placeholder {
-  color: #999;
+.live-tag-list input.live-tag-search {
+  width: auto;
+  padding: 5px 10px 5px 10px;
+  margin: 5px;
+  display: inline-block;
+}
 
+.live-tag-list input.live-tag-search::placeholder {
+  color: #aaa;
 }
 
 .live-tag-list input[type=checkbox]:checked + label {

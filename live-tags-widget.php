@@ -240,8 +240,6 @@ class Widget_Live_Tags extends Widget_Base {
             data['search'] = search.value;
           }
 
-          console.log('data', data);
-
         	jQuery.post('<?php echo $ajax_url ?>', data, handleResponse);
         }
 
