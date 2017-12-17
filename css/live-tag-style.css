@@ -73,3 +73,23 @@
 .live-tag-container {
   margin-top: 2rem;
 }
+
+.live-tag-container .live-tag-page {
+  padding: 0.25em;
+}
+
+[data-elementor-device-mode="desktop"] .live-tag-container .live-tag-page img {
+  float: left;
+  margin-right: 1em;
+  max-height: 150px;
+}
+
+[data-elementor-device-mode="desktop"] .live-tag-container .live-tag-page:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+[data-elementor-device-mode="desktop"] .live-tag-container .live-tag-page + .live-tag-page {
+  margin-top: 1em;
+}

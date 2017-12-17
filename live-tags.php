@@ -83,7 +83,8 @@ class LiveTagViewer {
           $pages[] = array(
             'title' => get_the_title($query->post->ID),
             'body' => substr(wp_strip_all_tags($query->post->post_content), 0, 300). '...',
-            'link' => get_post_permalink($query->post->ID)
+            'link' => get_post_permalink($query->post->ID),
+            'image' => $this->get_first_image_url($query->post)
           );
         }
       }
@@ -92,6 +93,12 @@ class LiveTagViewer {
 
     wp_send_json(array('pages' => $pages,
                        'tags' => $available_tags));
+  }
+
+  protected function get_first_image_url($page) {
+    $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $page->post_content, $matches);
+    // return $out
+    return $matches[1][0];
   }
 
 }
