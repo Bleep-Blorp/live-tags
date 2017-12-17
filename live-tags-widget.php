@@ -163,7 +163,7 @@ class Widget_Live_Tags extends Widget_Base {
              if (!empty($settings['search_label'])) {
                echo '<label class="live-tag-search-label" for="live-tag-search">' . $settings['search_label'] . '</label>' ;
              }
-             echo '<input type="search" placeholder="search" name="live-tag-search" class="live-tag-search"></input>';
+             echo '<input type="search" name="live-tag-search" class="live-tag-search"></input>';
              echo '</div>';
            }
 

@@ -50,16 +50,12 @@
 }
 
 .live-tag-list .live-tag-search-container label {
-  display: inline-block;
+  margin-left: 0;
 }
 
 .live-tag-list .live-tag-search-container input.live-tag-search {
   width: auto;
   padding: 5px 10px 5px 10px;
-}
-
-.live-tag-list input.live-tag-search::placeholder {
-  color: #aaa;
 }
 
 .live-tag-list input[type=checkbox]:checked + label.as-button {
