@@ -1,11 +1,12 @@
 .live-tag-list {
 }
 
+
+
 .live-tag-list label {
   margin: 5px;
-  float: left;
-  padding-top: 5px;
 }
+
 
 .live-tag-list label.as-button {
   float: left;
@@ -44,22 +45,17 @@
 
 .live-tag-list .live-tag-search-container {
   clear: left;
+  padding: 5px;
+
 }
 
 .live-tag-list .live-tag-search-container label {
-  margin: 5px;
-  display: inline-block;
+  margin-left: 0;
 }
 
 .live-tag-list .live-tag-search-container input.live-tag-search {
   width: auto;
   padding: 5px 10px 5px 10px;
-  margin: 5px;
-  display: inline-block;
-}
-
-.live-tag-list input.live-tag-search::placeholder {
-  color: #aaa;
 }
 
 .live-tag-list input[type=checkbox]:checked + label.as-button {
