@@ -3,7 +3,7 @@
 Plugin Name: Live Tags
 Plugin URI:  https://github.com/Bleep-Blorp/live-tags
 Description: Allows for live tag filtering
-Version:     3.0
+Version:     4.0
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
