@@ -91,6 +91,14 @@ class Widget_Live_Tags extends Widget_Base {
      );
 
      $this->add_control(
+       'show_image', [
+         'label' => __( "Show Article Image", 'ba-live-tags' ),
+         'default' => 'yes',
+         'type' => Controls_Manager::SWITCHER,
+       ]
+     );
+
+     $this->add_control(
        'tag_label', [
          'label' => __( "Tag Filter Label", 'ba-live-tags' ),
          'type' => Controls_Manager::TEXT,
@@ -195,6 +203,11 @@ class Widget_Live_Tags extends Widget_Base {
         function buildItem(page) {
           var content = '<div class="live-tag-page"><a href="'+page.link+'">';
               content += '<h3>'+page.title+'</h3>';
+              <?php if ($settings['show_image'] == 'yes') { ?>
+                if(page.image){
+                  content += '<img class="img-responsive" src="' + page.image + '"/>'
+                }
+              <?php } ?>
               <?php if ($settings['show_body'] == 'yes') {?>
                 content += '<p>' + page.body + '</p>';
               <?php } ?>
