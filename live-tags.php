@@ -3,7 +3,7 @@
 Plugin Name: Live Tags
 Plugin URI:  https://github.com/Bleep-Blorp/live-tags
 Description: Allows for live tag filtering
-Version:     4.0
+Version:     4.1
 Author:      Brian Anderson
 Author URI:  https://github.com/Bleep-Blorp/
 License:     MIT
@@ -11,7 +11,7 @@ License URI: https://github.com/Bleep-Blorp/live-tags
 */
 
 
-defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+defined( 'ABSPATH' ) or die( 'Nope' );
 
 class LiveTagViewer {
   public function __construct() {
@@ -80,9 +80,14 @@ class LiveTagViewer {
             $available_tags[$tag->term_id] += 1;
           }
 
+          $title = get_the_title($query->post->ID);
+          $body = substr(wp_strip_all_tags($query->post->post_content), 0, 300). '...';
+          $count = 1;
+          $body = str_ireplace($title, '', $body, $count);
+
           $pages[] = array(
-            'title' => get_the_title($query->post->ID),
-            'body' => substr(wp_strip_all_tags($query->post->post_content), 0, 300). '...',
+            'title' => $title,
+            'body' => $body,
             'link' => get_post_permalink($query->post->ID),
             'image' => $this->get_first_image_url($query->post)
           );
