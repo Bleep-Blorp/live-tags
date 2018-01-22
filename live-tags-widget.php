@@ -47,7 +47,14 @@ class Widget_Live_Tags extends Widget_Base {
        $this->add_control(
          $tag->term_id, [
            'label' => __( $tag->name, 'ba-live-tags' ),
-           'type' => Controls_Manager::SWITCHER,
+           'type' => Controls_Manager::SELECT,
+           'default' => 'no',
+           'options' => [
+     	       'no'  => __( 'Off', 'ba-live-tags' ),
+             'first'  => __( 'First Group', 'ba-live-tags' ),
+             'second'  => __( 'Second Group', 'ba-live-tags' ),
+             'third'  => __( 'Third Group', 'ba-live-tags' ),
+           ]
          ]
       );
      }
@@ -136,11 +143,20 @@ class Widget_Live_Tags extends Widget_Base {
       $all_tags = get_tags();
       usort($all_tags, array( $this, 'sort_by_name'));
 
-      $tags = [];
+      $tag_groups = [
+        [],
+        [],
+        []
+      ];
 
       foreach($all_tags as $tag) {
-        if($settings[$tag->term_id] == 'yes'){
-          $tags []= $tag;
+        if($settings[$tag->term_id] == 'first' ||
+           $settings[$tag->term_id] == 'yes'){
+          $tag_groups[0][]= $tag;
+        } else if ($settings[$tag->term_id] == 'second'){
+          $tag_groups[1][]= $tag;
+        } else if ($settings[$tag->term_id] == 'third'){
+          $tag_groups[2][]= $tag;
         }
       }
 
@@ -157,13 +173,17 @@ class Widget_Live_Tags extends Widget_Base {
               </div>
             <?php } ?>
            <?php
-           foreach( $tags as $tag ){
-             echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
-             echo '<label class="as-button" for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
-             if ($settings['show_count'] == 'yes') {
-               echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
+           foreach( $tag_groups as $tags ){
+             echo '<div class="tag-group">'
+             foreach( $tags as $tag ){
+               echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
+               echo '<label class="as-button" for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
+               if ($settings['show_count'] == 'yes') {
+                 echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
+               }
+               echo '</label>';
+               echo '</div>'
              }
-             echo '</label>';
            }
 
            if ($settings['show_search'] == 'yes') {
