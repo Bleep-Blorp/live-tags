@@ -22,6 +22,10 @@
   transition: transform 0.15s;
 }
 
+.live-tag-list .tag-group {
+  clear: both;
+}
+
 .live-tag-list label.as-button .tag-count {
   font-size: 70%;
   padding: 2px;
