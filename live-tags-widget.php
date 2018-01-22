@@ -53,7 +53,7 @@ class Widget_Live_Tags extends Widget_Base {
      	       'no'  => __( 'Off', 'ba-live-tags' ),
              'first'  => __( 'First Group', 'ba-live-tags' ),
              'second'  => __( 'Second Group', 'ba-live-tags' ),
-             'third'  => __( 'Third Group', 'ba-live-tags' ),
+             'third'  => __( 'Third Group', 'ba-live-tags' )
            ]
          ]
       );
@@ -143,11 +143,10 @@ class Widget_Live_Tags extends Widget_Base {
       $all_tags = get_tags();
       usort($all_tags, array( $this, 'sort_by_name'));
 
-      $tag_groups = [
-        [],
-        [],
-        []
-      ];
+      $tag_groups = [];
+      $tag_groups[0] = [];
+      $tag_groups[1] = [];
+      $tag_groups[2] = [];
 
       foreach($all_tags as $tag) {
         if($settings[$tag->term_id] == 'first' ||
