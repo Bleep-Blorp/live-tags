@@ -181,8 +181,8 @@ class Widget_Live_Tags extends Widget_Base {
                  echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
                }
                echo '</label>';
-               echo '</div>';
              }
+             echo '</div>';
            }
 
            if ($settings['show_search'] == 'yes') {
