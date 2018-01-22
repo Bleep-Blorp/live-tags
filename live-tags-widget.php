@@ -173,7 +173,7 @@ class Widget_Live_Tags extends Widget_Base {
             <?php } ?>
            <?php
            foreach( $tag_groups as $tags ){
-             echo '<div class="tag-group">'
+             echo '<div class="tag-group">';
              foreach( $tags as $tag ){
                echo '<input type="checkbox" class="live-tag" value="'.$tag->term_id.'" id="checkbox_for_tag_'.$tag->term_id.'"></input>';
                echo '<label class="as-button" for="checkbox_for_tag_'.$tag->term_id.'">' . $tag->name ;
@@ -181,7 +181,7 @@ class Widget_Live_Tags extends Widget_Base {
                  echo '<span data-original-count='.$tag->count.' class="tag-count">'.$tag->count.'</span>';
                }
                echo '</label>';
-               echo '</div>'
+               echo '</div>';
              }
            }
 
